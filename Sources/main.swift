@@ -121,7 +121,7 @@ struct Parameter<T: Validatorable> {
     for (message, check) in checks {
       switch message {
       case let .value(that):
-        if (try? check.check(result)) == nil {
+        if (try? check.check(result)) != nil {
           throw that
         }
       case .none:
