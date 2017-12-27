@@ -190,4 +190,4 @@ enum KeyThing: Hashable {
   }
 }
 
-var x: [KeyThing: String] = [.none: "ksjdsd"]
+var x: [KeyThing: String] = [.none: "ksjdsd", .value("hello"): "hksjd"]
