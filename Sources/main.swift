@@ -23,8 +23,6 @@ enum KeyThing: Hashable {
   }
 }
 
-// var x: [KeyThing: String] = [.none: "ksjdsd", .value("hello"): "hksjd"]
-
 extension String: Error {}
 
 protocol Restrictionable {
