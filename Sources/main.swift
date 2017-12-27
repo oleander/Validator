@@ -33,7 +33,7 @@ protocol Restrictionable {
 }
 
 extension Restrictionable {
-  // body
+  func check(_ value: Self) throws {}
 }
 
 protocol Validatorable: Equatable {
@@ -73,16 +73,16 @@ extension String: Validatorable, Restrictionable {
     case max(Int)
     case min(Int)
 
-    func check(_ value: String) throws {
-      // switch self {
-      // case let .max(other) where value.count <= other:
-      //   return
-      // case let .min(other) where value.count >= other:
-      //   return
-      // default:
-      //   throw "not valid"
-      // }
-    }
+    // func check(_ value: String) throws {
+    //   // switch self {
+    //   // case let .max(other) where value.count <= other:
+    //   //   return
+    //   // case let .min(other) where value.count >= other:
+    //   //   return
+    //   // default:
+    //   //   throw "not valid"
+    //   // }
+    // }
   }
 
   static func parse(_ value: String) -> String? {
