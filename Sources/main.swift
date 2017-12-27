@@ -39,9 +39,10 @@ protocol Validatorable: Equatable, Restrictionable {
   static func parse(_ value: String) -> Self?
 }
 
-// extension Validatorable {
-//   func check(_ value: Self) throws {}
-// }
+extension Validatorable {
+  typealias ValueToCheck = Self
+  func check(_ value: Self) throws {}
+}
 
 extension Int: Validatorable {
   // typealias ValueToCheck = Int
