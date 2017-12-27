@@ -171,7 +171,7 @@ enum KeyThing: Hashable {
 
   var hashValue: Int {
     switch self {
-    case let .none:
+    case .none:
       return -1
     case let .value(message):
       return message.hashValue
