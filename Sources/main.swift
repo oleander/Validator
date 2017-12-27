@@ -285,6 +285,10 @@ let multiOpt3 = MultiParameter<String>(
   checks: [.max(2)]
 )
 
+let multiOpt5 = MultiParameter<String>(
+  options: ["hello", "pelle"]
+)
+
 assert((try? check.parse("11")) == 11)
 assert((try! multiOpt.read("volvo,saab")) == [.volvo, .saab])
 assert((try? multiOpt2.read("volvo,saab")) == nil)
@@ -293,6 +297,9 @@ assert((try! multiOpt2.read("volvo")) == [.volvo])
 assert((try! multiOpt3.read("aa,bb")) == ["aa", "bb"])
 
 assert((try! multiOpt4.read(nil)) == [.volvo])
+
+assert((try! multiOpt5.read("hello,pelle")) == ["hello", "pelle"])
+assert((try? multiOpt5.read("hello,ok")) == nil)
 
 assert((try? check.parse("100")) == nil)
 assert((try? opt.parse("volvo")) == .volvo)
