@@ -33,7 +33,7 @@ protocol Restrictionable {
 }
 
 extension Restrictionable {
-  func check(_ value: Self) throws {}
+  func check(_ value: ValueToCheck) throws {}
 }
 
 protocol Validatorable: Equatable {
@@ -70,6 +70,7 @@ extension Int: Validatorable {
 
 extension String: Validatorable, Restrictionable {
   enum Restriction: Restrictionable {
+    typealias ValueToCheck = String
     case max(Int)
     case min(Int)
 
