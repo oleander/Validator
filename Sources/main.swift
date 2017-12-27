@@ -44,7 +44,7 @@ protocol Validatorable: Equatable, Restrictionable {
 // }
 
 extension Int: Validatorable {
-  typealias ValueToCheck = Int
+  // typealias ValueToCheck = Int
 
   enum Restriction: Restrictionable {
     case max(Int)
