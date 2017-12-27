@@ -43,14 +43,14 @@ extension String: Validatorable, Restrictionable {
     case min(Int)
 
     func check(_ value: String) throws {
-      switch self {
-      case let .max(other) where value.count <= other:
-        return
-      case let .min(other) where value.count >= other:
-        return
-      default:
-        throw "not valid"
-      }
+      // switch self {
+      // case let .max(other) where value.count <= other:
+      //   return
+      // case let .min(other) where value.count >= other:
+      //   return
+      // default:
+      //   throw "not valid"
+      // }
     }
   }
 
@@ -68,6 +68,11 @@ struct Parameter<T: Validatorable> {
   }
 
   init(options: [T]) {
+    self.options = options
+  }
+
+  init(checks: [T.Restriction], options: [T]) {
+    self.checks = checks
     self.options = options
   }
 
