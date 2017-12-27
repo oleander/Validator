@@ -2,7 +2,7 @@ extension String: Error {}
 
 protocol Validatorable {
   associatedtype Restriction
-  static func parse(_ value: String) throws -> Self
+  static func parse(_ value: String) -> Self?
 }
 
 extension Int: Validatorable {
@@ -19,9 +19,11 @@ struct Parameter<T: Validatorable> {
   let restrictions: [T.Restriction]
 
   func parse(_ value: String) throws -> T {
-    guard let result = try T.parse(value) else {
+    guard let result = T.parse(value) else {
       throw "Could not parse"
     }
+
+    return result
   }
 }
 
@@ -30,4 +32,4 @@ let check = Parameter<Int>(
   restrictions: [.max(90)]
 )
 
-print(check.parse("10"))
+print(try check.parse("10"))
