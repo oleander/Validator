@@ -32,6 +32,15 @@ extension Int: Validatorable {
   }
 }
 
+
+extension String: Validatorable, Restrictionable {
+  typealias Restriction = String
+  func check(_ value: String) throws {}
+  static func parse(_ value: String) -> Restriction? {
+    return value
+  }
+}
+
 struct Parameter<T: Validatorable> {
   var checks: [T.Restriction]?
   var options: [T]?
@@ -96,8 +105,16 @@ let opt = Parameter<Car>(
   options: [.volvo]
 )
 
+let optString = Parameter<String>(
+  // flag: "max-age"  jjjj
+  // checks: [.min(10), .max(90)]
+  options: ["horse"]
+)
+
 assert((try? check.parse("11")) == 11)
 assert((try? check.parse("100")) == nil)
 assert((try? opt.parse("volvo")) == .volvo)
 assert((try? opt.parse("nothing")) == nil)
 assert((try? opt.parse("saab")) == nil)
+assert((try? optString.parse("horse")) == "horse")
+assert((try? optString.parse("pell")) == nil)
