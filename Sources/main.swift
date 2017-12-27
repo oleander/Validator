@@ -45,8 +45,6 @@ extension Validatorable {
 }
 
 extension Int: Validatorable {
-  // typealias ValueToCheck = Int
-
   enum Restriction: Restrictionable {
     case max(Int)
     case min(Int)
@@ -70,8 +68,6 @@ extension Int: Validatorable {
 
 
 extension String: Validatorable {
-  typealias ValueToCheck = String
-
   enum Restriction: Restrictionable {
     typealias ValueToCheck = String
     case max(Int)
