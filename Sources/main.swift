@@ -32,4 +32,8 @@ let check = Parameter<Int>(
   restrictions: [.max(90)]
 )
 
-print(try check.parse("10"))
+do {
+  print(try check.parse("10"))
+} catch {
+  print("ERROR: \(error)")
+}
