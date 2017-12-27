@@ -1,31 +1,29 @@
-// class Base<Element: Paramable>: Setter {
-//   var items: [String]?
-//   let fallback: [Element]
-//   let flag: String
-//   let options: [Element]
-//   let examples: [String: String]
-//   let validation: [Element.Validator]
-// }
-
 protocol Validatorable {
-  associatedtype Checker
+  associatedtype Restriction
+  static func parse(_ value: String) -> Self
 }
 
 extension Int: Validatorable {
-  // static public let max = MaxCheck()
-  enum Checker {
+  enum Restriction {
     case max(Int)
   }
-}
 
-
-struct Validator<T: Validatorable> {
-  init(validation: [T.Checker]) {
-    print(validation)
+  static func parse(_ value: String) -> Int {
+    return Int(value)!
   }
 }
 
-let check = Validator<Int>(
+struct Parameter<T: Validatorable> {
+  let restrictions: [T.Restriction]
+
+  func parse(_ value: String) -> T {
+    return T.parse(value)
+  }
+}
+
+let check = Parameter<Int>(
   // flag: "max-age",
-  validation: [.max(90)]
+  restrictions: [.max(90)]
 )
+
+print(check.parse("10"))
