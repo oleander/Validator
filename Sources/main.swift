@@ -166,22 +166,25 @@ struct Parameter<T: Validatorable> {
     self.fallback = fallback
   }
 
-  init(checks: [T.Restriction]) {
+  init(checks: [T.Restriction] = [], options: [T]? = nil, fallback: T? = nil) {
     for check in checks {
       self.checks[.none] = check
     }
+
+    self.options = options
+    self.fallback = fallback
   }
 
   init(options: [T]?) {
     self.options = options
   }
 
-  init(checks: [T.Restriction], options: [T]) {
-    for check in checks {
-      self.checks[.none] = check
-    }
-    self.options = options
-  }
+  // init(checks: [T.Restriction], options: [T]) {
+  //   for check in checks {
+  //     self.checks[.none] = check
+  //   }
+  //   self.options = options
+  // }
 
   func read(_ value: String?) throws -> T {
     guard let value = value else {
@@ -203,7 +206,9 @@ struct Parameter<T: Validatorable> {
     for (message, check) in checks {
       switch message {
       case let .value(that):
-        if (try? check.check(result)) != nil {
+        do {
+          try check.check(result)
+        } catch {
           throw that
         }
       case .none:
@@ -283,18 +288,18 @@ let multiOpt3 = MultiParameter<String>(
 // assert((try! multiOpt2.read("volvo")) == [.volvo])
 //
 // assert((try! multiOpt3.read("aa,bb")) == ["aa", "bb"])
-assert((try? multiOpt3.read("aa,bbb")) == nil)
+// assert((try? multiOpt3.read("aa,bbb")) == nil)
 
 
-assert((try? check.parse("100")) == nil)
-assert((try? opt.parse("volvo")) == .volvo)
-assert((try? opt.parse("nothing")) == nil)
-assert((try? opt.parse("saab")) == nil)
-assert((try? optString.parse("horse")) == "horse")
-assert((try? optString.parse("pell")) == nil)
-assert((try? opt3.read(nil)) == .volvo)
-assert((try? opt3.read("volvo")) == .volvo)
-assert((try? opt3.read("hell")) == nil)
+// assert((try? check.parse("100")) == nil)
+// assert((try? opt.parse("volvo")) == .volvo)
+// assert((try? opt.parse("nothing")) == nil)
+// assert((try? opt.parse("saab")) == nil)
+// assert((try? optString.parse("horse")) == "horse")
+// assert((try? optString.parse("pell")) == nil)
+// assert((try? opt3.read(nil)) == .volvo)
+// assert((try? opt3.read("volvo")) == .volvo)
+// assert((try? opt3.read("hell")) == nil)
 
 do {
   _ = try optStringWithKey.parse("aaaxxx")
