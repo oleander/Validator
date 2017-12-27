@@ -94,9 +94,9 @@ extension String: Validatorable {
 struct MultiParameter<T: Validatorable> {
   var checks: [KeyThing: T.Restriction] = [:]
   var options: [T]?
-  var fallback: T?
+  var fallback: [T]?
 
-  init(fallback: T) {
+  init(fallback: [T]) {
     self.fallback = fallback
   }
 
@@ -125,9 +125,9 @@ struct MultiParameter<T: Validatorable> {
 
   func read(_ value: String?) throws -> [T] {
     guard let value = value else {
-      // if let fallback = fallback {
-      //   return fallback
-      // }
+      if let fallback = fallback {
+        return fallback
+      }
 
       throw "No value passed"
     }
@@ -135,8 +135,7 @@ struct MultiParameter<T: Validatorable> {
     return try value.components(separatedBy: ",").map { part in
       return try Parameter<T>(
         checks: checks,
-        options: options,
-        fallback: fallback
+        options: options
       ).parse(part)
     }
   }
@@ -278,6 +277,10 @@ let multiOpt2 = MultiParameter<Car>(
   options: [.volvo]
 )
 
+let multiOpt4 = MultiParameter<Car>(
+  fallback: [.volvo]
+)
+
 let multiOpt3 = MultiParameter<String>(
   checks: [.max(2)]
 )
@@ -288,7 +291,8 @@ assert((try? multiOpt2.read("volvo,saab")) == nil)
 assert((try! multiOpt2.read("volvo")) == [.volvo])
 
 assert((try! multiOpt3.read("aa,bb")) == ["aa", "bb"])
-assert((try? multiOpt3.read("aa,bbb")) == nil)
+
+assert((try! multiOpt4.read(nil)) == [.volvo])
 
 assert((try? check.parse("100")) == nil)
 assert((try? opt.parse("volvo")) == .volvo)
