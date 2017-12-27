@@ -10,6 +10,10 @@ protocol Validatorable: Equatable {
   static func parse(_ value: String) -> Self?
 }
 
+extension Validatorable {
+  func check(_ value: String) throws {}
+}
+
 extension Int: Validatorable {
   enum Restriction: Restrictionable {
     case max(Int)
@@ -35,7 +39,6 @@ extension Int: Validatorable {
 
 extension String: Validatorable, Restrictionable {
   typealias Restriction = String
-  func check(_ value: String) throws {}
   static func parse(_ value: String) -> Restriction? {
     return value
   }
