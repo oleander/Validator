@@ -282,13 +282,13 @@ let multiOpt3 = MultiParameter<String>(
   checks: [.max(2)]
 )
 
-// assert((try? check.parse("11")) == 11)
-// assert((try! multiOpt.read("volvo,saab")) == [.volvo, .saab])
-// assert((try? multiOpt2.read("volvo,saab")) == nil)
-// assert((try! multiOpt2.read("volvo")) == [.volvo])
-//
-// assert((try! multiOpt3.read("aa,bb")) == ["aa", "bb"])
-// assert((try? multiOpt3.read("aa,bbb")) == nil)
+assert((try? check.parse("11")) == 11)
+assert((try! multiOpt.read("volvo,saab")) == [.volvo, .saab])
+assert((try? multiOpt2.read("volvo,saab")) == nil)
+assert((try! multiOpt2.read("volvo")) == [.volvo])
+
+assert((try! multiOpt3.read("aa,bb")) == ["aa", "bb"])
+assert((try? multiOpt3.read("aa,bbb")) == nil)
 
 
 assert((try? check.parse("100")) == nil)
