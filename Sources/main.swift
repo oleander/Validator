@@ -5,7 +5,7 @@ protocol Restrictionable {
   func check(_ value: ValueToCheck) throws
 }
 
-protocol Validatorable {
+protocol Validatorable: Equatable {
   associatedtype Restriction: Restrictionable where Restriction.ValueToCheck == Self
   static func parse(_ value: String) -> Self?
 }
@@ -33,8 +33,8 @@ extension Int: Validatorable {
 }
 
 struct Parameter<T: Validatorable> {
-  var checks: [T.Restriction] = []
-  var options: [T] = []
+  var checks: [T.Restriction]?
+  var options: [T]?
 
   init(checks: [T.Restriction]) {
     self.checks = checks
@@ -49,8 +49,16 @@ struct Parameter<T: Validatorable> {
       throw "Could not parse"
     }
 
-    for check in checks {
-      try check.check(result)
+    if let checks = self.checks {
+      for check in checks {
+        try check.check(result)
+      }
+    }
+
+    if let options = self.options {
+      guard (options.contains { $0 == result }) else {
+        throw "Not in options"
+      }
     }
 
     return result
@@ -66,7 +74,9 @@ enum Car: Validatorable, Restrictionable {
   typealias Restriction = Car
   case volvo, saab
 
-  func check(_ value: Car) throws {}
+  func check(_ value: Car) throws {
+
+  }
 
   static func parse(_ value: String) -> Restriction? {
     switch value {
@@ -90,3 +100,4 @@ assert((try? check.parse("11")) == 11)
 assert((try? check.parse("100")) == nil)
 assert((try? opt.parse("volvo")) == .volvo)
 assert((try? opt.parse("nothing")) == nil)
+assert((try? opt.parse("saab")) == nil)
