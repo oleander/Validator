@@ -73,6 +73,17 @@ extension String: Validatorable {
     typealias ValueToCheck = String
     case max(Int)
     case min(Int)
+
+    func check(_ value: String) throws {
+      switch self {
+      case let .max(other) where value.count <= other:
+        return
+      case let .min(other) where value.count >= other:
+        return
+      default:
+        throw "not valid"
+      }
+    }
   }
 
   static func parse(_ value: String) -> String? {
@@ -81,9 +92,34 @@ extension String: Validatorable {
 }
 
 struct MultiParameter<T: Validatorable> {
+  var checks: [KeyThing: T.Restriction] = [:]
   var options: [T]?
+  var fallback: T?
 
-  init(options: [T] = []) {
+  init(fallback: T) {
+    self.fallback = fallback
+  }
+
+  init(checks: [String: T.Restriction] = [:]) {
+    for (message, check) in checks {
+      self.checks[.value(message)] = check
+    }
+  }
+
+  init(checks: [T.Restriction]) {
+    for check in checks {
+      self.checks[.none] = check
+    }
+  }
+
+  init(options: [T]?) {
+    self.options = options
+  }
+
+  init(checks: [T.Restriction], options: [T]) {
+    for check in checks {
+      self.checks[.none] = check
+    }
     self.options = options
   }
 
@@ -97,7 +133,11 @@ struct MultiParameter<T: Validatorable> {
     }
 
     return try value.components(separatedBy: ",").map { part in
-      return try Parameter<T>(options: options).parse(part)
+      return try Parameter<T>(
+        checks: checks,
+        options: options,
+        fallback: fallback
+      ).parse(part)
     }
   }
 }
@@ -111,10 +151,19 @@ struct Parameter<T: Validatorable> {
     self.fallback = fallback
   }
 
-  init(checks: [String: T.Restriction] = [:]) {
+  init(checks: [KeyThing: T.Restriction] = [:], options: [T]? = nil, fallback: T? = nil) {
+    self.options = options
+    self.fallback = fallback
+    self.checks = checks
+  }
+
+  init(checks: [String: T.Restriction] = [:], options: [T]? = nil, fallback: T? = nil) {
     for (message, check) in checks {
       self.checks[.value(message)] = check
     }
+
+    self.options = options
+    self.fallback = fallback
   }
 
   init(checks: [T.Restriction]) {
@@ -224,23 +273,32 @@ let multiOpt2 = MultiParameter<Car>(
   options: [.volvo]
 )
 
-assert((try? check.parse("11")) == 11)
-assert((try! multiOpt.read("volvo,saab")) == [.volvo, .saab])
-assert((try? multiOpt2.read("volvo,saab")) == nil)
-assert((try! multiOpt2.read("volvo")) == [.volvo])
-assert((try? check.parse("100")) == nil)
-assert((try? opt.parse("volvo")) == .volvo)
-assert((try? opt.parse("nothing")) == nil)
-assert((try? opt.parse("saab")) == nil)
-assert((try? optString.parse("horse")) == "horse")
-assert((try? optString.parse("pell")) == nil)
-assert((try? opt3.read(nil)) == .volvo)
-assert((try? opt3.read("volvo")) == .volvo)
-assert((try? opt3.read("hell")) == nil)
+let multiOpt3 = MultiParameter<String>(
+  checks: [.max(2)]
+)
 
-do {
-  _ = try optStringWithKey.parse("aaaxxx")
-  assert(false)
-} catch {
-  assert(String(describing: error) == "Max 3")
-}
+// assert((try? check.parse("11")) == 11)
+// assert((try! multiOpt.read("volvo,saab")) == [.volvo, .saab])
+// assert((try? multiOpt2.read("volvo,saab")) == nil)
+// assert((try! multiOpt2.read("volvo")) == [.volvo])
+//
+// assert((try! multiOpt3.read("aa,bb")) == ["aa", "bb"])
+assert((try? multiOpt3.read("aa,bbb")) == nil)
+
+
+// assert((try? check.parse("100")) == nil)
+// assert((try? opt.parse("volvo")) == .volvo)
+// assert((try? opt.parse("nothing")) == nil)
+// assert((try? opt.parse("saab")) == nil)
+// assert((try? optString.parse("horse")) == "horse")
+// assert((try? optString.parse("pell")) == nil)
+// assert((try? opt3.read(nil)) == .volvo)
+// assert((try? opt3.read("volvo")) == .volvo)
+// assert((try? opt3.read("hell")) == nil)
+//
+// do {
+//   _ = try optStringWithKey.parse("aaaxxx")
+//   assert(false)
+// } catch {
+//   assert(String(describing: error) == "Max 3")
+// }
