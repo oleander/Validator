@@ -217,6 +217,7 @@ let multiOpt = MultiParam<Car>(
 
 assert((try? check.parse("11")) == 11)
 assert((try! multiOpt.read("volvo,saab")) == [.volvo, .saab])
+assert((try? multiOpt.read("volvo,xxx")) == nil)
 assert((try? check.parse("100")) == nil)
 assert((try? opt.parse("volvo")) == .volvo)
 assert((try? opt.parse("nothing")) == nil)
