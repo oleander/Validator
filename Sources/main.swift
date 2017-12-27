@@ -18,9 +18,9 @@ extension Int: Validatorable {
       switch self {
       case let .max(other) where value < other:
         return
+      default:
+        throw "not valid"
       }
-
-      throw "not valid"
     }
   }
 
