@@ -34,16 +34,18 @@ extension Restrictionable {
   func check(_ value: ValueToCheck) throws {}
 }
 
-protocol Validatorable: Equatable {
+protocol Validatorable: Equatable, Restrictionable {
   associatedtype Restriction: Restrictionable where Restriction.ValueToCheck == Self
   static func parse(_ value: String) -> Self?
 }
 
-extension Validatorable {
-  func check(_ value: Self) throws {}
-}
+// extension Validatorable {
+//   func check(_ value: Self) throws {}
+// }
 
 extension Int: Validatorable {
+  typealias ValueToCheck = Int
+
   enum Restriction: Restrictionable {
     case max(Int)
     case min(Int)
@@ -66,7 +68,9 @@ extension Int: Validatorable {
 }
 
 
-extension String: Validatorable, Restrictionable {
+extension String: Validatorable {
+  typealias ValueToCheck = String
+
   enum Restriction: Restrictionable {
     typealias ValueToCheck = String
     case max(Int)
@@ -148,8 +152,9 @@ struct Parameter<T: Validatorable> {
   }
 }
 
-enum Car: Validatorable, Restrictionable {
+enum Car: Validatorable {
   typealias Restriction = Car
+  typealias ValueToCheck = Car
   case volvo, saab
 
   static func parse(_ value: String) -> Restriction? {
