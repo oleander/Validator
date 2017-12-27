@@ -52,6 +52,7 @@ let check = Parameter<Int>(
 
 do {
   print(try check.parse("10"))
+  print(try check.parse("100"))
 } catch {
   print("ERROR: \(error)")
 }
