@@ -49,13 +49,9 @@ struct Parameter<T: Validatorable> {
 }
 
 let check = Parameter<Int>(
-  // flag: "max-age",
+  // flag: "max-age"  jjjj
   checks: [.min(10), .max(90)]
 )
 
-do {
-  print(try check.parse("11"))
-  print(try check.parse("100"))
-} catch {
-  print("ERROR: \(error)")
-}
+assert((try? check.parse("11")) == 11)
+assert((try? check.parse("100")) == nil)
