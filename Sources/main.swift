@@ -8,16 +8,24 @@
 // }
 
 protocol Validatorable {
-
+  associatedtype Checker
 }
 
-extension Int: Validatorable {}
+extension Int: Validatorable {
+  // static public let max = MaxCheck()
+  enum Checker {
+    case max(Int)
+  }
+}
+
 
 struct Validator<T: Validatorable> {
-
+  init(validation: [T.Checker]) {
+    print(validation)
+  }
 }
 
 let check = Validator<Int>(
   // flag: "max-age",
-  // validation: [.max(90)]
+  validation: [.max(90)]
 )
