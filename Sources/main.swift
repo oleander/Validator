@@ -291,15 +291,15 @@ let multiOpt3 = MultiParameter<String>(
 // assert((try? multiOpt3.read("aa,bbb")) == nil)
 
 
-// assert((try? check.parse("100")) == nil)
-// assert((try? opt.parse("volvo")) == .volvo)
-// assert((try? opt.parse("nothing")) == nil)
-// assert((try? opt.parse("saab")) == nil)
-// assert((try? optString.parse("horse")) == "horse")
-// assert((try? optString.parse("pell")) == nil)
-// assert((try? opt3.read(nil)) == .volvo)
-// assert((try? opt3.read("volvo")) == .volvo)
-// assert((try? opt3.read("hell")) == nil)
+assert((try? check.parse("100")) == nil)
+assert((try? opt.parse("volvo")) == .volvo)
+assert((try? opt.parse("nothing")) == nil)
+assert((try? opt.parse("saab")) == nil)
+assert((try? optString.parse("horse")) == "horse")
+assert((try? optString.parse("pell")) == nil)
+assert((try? opt3.read(nil)) == .volvo)
+assert((try? opt3.read("volvo")) == .volvo)
+assert((try? opt3.read("hell")) == nil)
 
 do {
   _ = try optStringWithKey.parse("aaaxxx")
