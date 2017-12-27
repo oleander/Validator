@@ -1,3 +1,5 @@
+import Foundation
+
 enum KeyThing: Hashable {
   case none
   case value(String)
@@ -79,6 +81,22 @@ extension String: Validatorable {
   }
 }
 
+struct MultiParam<T: Validatorable> {
+  func read(_ value: String?) throws -> [T] {
+    guard let value = value else {
+      // if let fallback = fallback {
+      //   return fallback
+      // }
+
+      throw "No value passed"
+    }
+
+    return try value.components(separatedBy: ",").map { part in
+      return try Parameter<T>().parse(part)
+    }
+  }
+}
+
 struct Parameter<T: Validatorable> {
   var checks: [KeyThing: T.Restriction] = [:]
   var options: [T]?
@@ -88,7 +106,7 @@ struct Parameter<T: Validatorable> {
     self.fallback = fallback
   }
 
-  init(checks: [String: T.Restriction]) {
+  init(checks: [String: T.Restriction] = [:]) {
     for (message, check) in checks {
       self.checks[.value(message)] = check
     }
@@ -193,7 +211,12 @@ let opt3 = Parameter<Car>(
   fallback: .volvo
 )
 
+let multiOpt = MultiParam<Car>(
+  // options: [., .maybe]
+)
+
 assert((try? check.parse("11")) == 11)
+assert((try! multiOpt.read("volvo,saab")) == [.volvo, .saab])
 assert((try? check.parse("100")) == nil)
 assert((try? opt.parse("volvo")) == .volvo)
 assert((try? opt.parse("nothing")) == nil)
