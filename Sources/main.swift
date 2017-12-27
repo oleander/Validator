@@ -68,7 +68,6 @@ extension Int: Validatorable {
   }
 }
 
-
 extension String: Validatorable {
   enum Restriction: Restrictionable {
     typealias ValueToCheck = String
@@ -224,7 +223,6 @@ let multiOpt = MultiParameter<Car>(
 let multiOpt2 = MultiParameter<Car>(
   options: [.volvo]
 )
-
 
 assert((try? check.parse("11")) == 11)
 assert((try! multiOpt.read("volvo,saab")) == [.volvo, .saab])
