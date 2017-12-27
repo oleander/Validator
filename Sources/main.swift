@@ -1,9 +1,13 @@
 extension String: Error {}
 
-protocol Restrictionable {
+protocol Restrictionable: Hashable {
   associatedtype ValueToCheck
   func check(_ value: ValueToCheck) throws
 }
+
+// extension Restrictionable {
+//   body
+// }
 
 protocol Validatorable: Equatable {
   associatedtype Restriction: Restrictionable where Restriction.ValueToCheck == Self
@@ -60,11 +64,17 @@ extension String: Validatorable, Restrictionable {
 }
 
 struct Parameter<T: Validatorable> {
-  var checks: [T.Restriction]?
+  var checks: [T.Restriction: String?]?
   var options: [T]?
 
-  init(checks: [T.Restriction]) {
+  init(checks: [T.Restriction: String]) {
     self.checks = checks
+  }
+
+  init(checks: [T.Restriction]) {
+    for check in checks {
+      self.checks[check] = nil
+    }
   }
 
   init(options: [T]) {
@@ -82,8 +92,14 @@ struct Parameter<T: Validatorable> {
     }
 
     if let checks = self.checks {
-      for check in checks {
-        try check.check(result)
+      for (check, message) in checks {
+        if let message = message {
+          if (try? check.check(result)) == nil {
+            throw message
+          }
+        } else {
+          try check.check(result)
+        }
       }
     }
 
@@ -130,6 +146,13 @@ let optString = Parameter<String>(
   options: ["horse"]
 )
 
+let optStringWithKey = Parameter<String>(
+  // flag: "max-age"  jjjj
+  checks: [
+    .max(3) => "Max 3"
+  ]
+)
+
 assert((try? check.parse("11")) == 11)
 assert((try? check.parse("100")) == nil)
 assert((try? opt.parse("volvo")) == .volvo)
@@ -137,3 +160,10 @@ assert((try? opt.parse("nothing")) == nil)
 assert((try? opt.parse("saab")) == nil)
 assert((try? optString.parse("horse")) == "horse")
 assert((try? optString.parse("pell")) == nil)
+
+do {
+  try optStringWithKey.parse("xxx")
+  assert(false)
+} catch {
+  assert(error == "Max 3")
+}
