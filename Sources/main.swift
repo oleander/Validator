@@ -151,7 +151,6 @@ struct Parameter<T: Validatorable> {
 
 enum Car: Validatorable {
   typealias Restriction = Car
-  typealias ValueToCheck = Car
   case volvo, saab
 
   static func parse(_ value: String) -> Restriction? {
