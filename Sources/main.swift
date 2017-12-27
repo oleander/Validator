@@ -290,7 +290,6 @@ assert((try! multiOpt2.read("volvo")) == [.volvo])
 assert((try! multiOpt3.read("aa,bb")) == ["aa", "bb"])
 assert((try? multiOpt3.read("aa,bbb")) == nil)
 
-
 assert((try? check.parse("100")) == nil)
 assert((try? opt.parse("volvo")) == .volvo)
 assert((try? opt.parse("nothing")) == nil)
