@@ -32,6 +32,10 @@ protocol Restrictionable {
   func check(_ value: ValueToCheck) throws
 }
 
+extension Restrictionable {
+  // body
+}
+
 protocol Validatorable: Equatable {
   associatedtype Restriction: Restrictionable where Restriction.ValueToCheck == Self
   static func parse(_ value: String) -> Self?
