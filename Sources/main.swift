@@ -16,9 +16,11 @@ extension Int: Validatorable {
 
     func check(_ value: Int) throws {
       switch self {
-      case .max:
+      case let .max(other) where value < other:
         return
       }
+
+      throw "not valid"
     }
   }
 
