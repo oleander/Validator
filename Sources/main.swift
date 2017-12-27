@@ -11,7 +11,7 @@ protocol Validatorable: Equatable {
 }
 
 extension Validatorable {
-  func check(_ value: String) throws {}
+  func check(_ value: Self) throws {}
 }
 
 extension Int: Validatorable {
@@ -38,8 +38,23 @@ extension Int: Validatorable {
 
 
 extension String: Validatorable, Restrictionable {
-  typealias Restriction = String
-  static func parse(_ value: String) -> Restriction? {
+  enum Restriction: Restrictionable {
+    case max(Int)
+    case min(Int)
+
+    func check(_ value: String) throws {
+      switch self {
+      case let .max(other) where value.count <= other:
+        return
+      case let .min(other) where value.count >= other:
+        return
+      default:
+        throw "not valid"
+      }
+    }
+  }
+
+  static func parse(_ value: String) -> String? {
     return value
   }
 }
@@ -86,10 +101,6 @@ enum Car: Validatorable, Restrictionable {
   typealias Restriction = Car
   case volvo, saab
 
-  func check(_ value: Car) throws {
-
-  }
-
   static func parse(_ value: String) -> Restriction? {
     switch value {
     case "volvo":
@@ -110,7 +121,7 @@ let opt = Parameter<Car>(
 
 let optString = Parameter<String>(
   // flag: "max-age"  jjjj
-  // checks: [.min(10), .max(90)]
+  checks: [.min(10), .max(90)],
   options: ["horse"]
 )
 
