@@ -73,17 +73,6 @@ extension String: Validatorable, Restrictionable {
     typealias ValueToCheck = String
     case max(Int)
     case min(Int)
-
-    // func check(_ value: String) throws {
-    //   // switch self {
-    //   // case let .max(other) where value.count <= other:
-    //   //   return
-    //   // case let .min(other) where value.count >= other:
-    //   //   return
-    //   // default:
-    //   //   throw "not valid"
-    //   // }
-    // }
   }
 
   static func parse(_ value: String) -> String? {
@@ -94,6 +83,11 @@ extension String: Validatorable, Restrictionable {
 struct Parameter<T: Validatorable> {
   var checks: [KeyThing: T.Restriction] = [:]
   var options: [T]?
+  var fallback: T?
+
+  init(fallback: T) {
+    self.fallback = fallback
+  }
 
   init(checks: [String: T.Restriction]) {
     for (message, check) in checks {
@@ -116,6 +110,18 @@ struct Parameter<T: Validatorable> {
       self.checks[.none] = check
     }
     self.options = options
+  }
+
+  func read(_ value: String?) throws -> T {
+    guard let value = value else {
+      if let fallback = fallback {
+        return fallback
+      }
+
+      throw "No value passed"
+    }
+
+    return try parse(value)
   }
 
   func parse(_ value: String) throws -> T {
@@ -144,11 +150,6 @@ struct Parameter<T: Validatorable> {
   }
 }
 
-let check = Parameter<Int>(
-  // flag: "max-age"  jjjj
-  checks: [.min(10), .max(90)]
-)
-
 enum Car: Validatorable, Restrictionable {
   typealias Restriction = Car
   case volvo, saab
@@ -164,6 +165,11 @@ enum Car: Validatorable, Restrictionable {
     }
   }
 }
+
+let check = Parameter<Int>(
+  // flag: "max-age"  jjjj
+  checks: [.min(10), .max(90)]
+)
 
 let opt = Parameter<Car>(
   // flag: "max-age"  jjjj
@@ -184,6 +190,10 @@ let optStringWithKey = Parameter<String>(
   ]
 )
 
+let opt3 = Parameter<Car>(
+  fallback: .volvo
+)
+
 assert((try? check.parse("11")) == 11)
 assert((try? check.parse("100")) == nil)
 assert((try? opt.parse("volvo")) == .volvo)
@@ -191,6 +201,9 @@ assert((try? opt.parse("nothing")) == nil)
 assert((try? opt.parse("saab")) == nil)
 assert((try? optString.parse("horse")) == "horse")
 assert((try? optString.parse("pell")) == nil)
+assert((try? opt3.read(nil)) == .volvo)
+assert((try? opt3.read("volvo")) == .volvo)
+assert((try? opt3.read("hell")) == nil)
 
 do {
   _ = try optStringWithKey.parse("aaaxxx")
