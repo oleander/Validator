@@ -33,8 +33,8 @@ extension Int: Validatorable {
 }
 
 struct Parameter<T: Validatorable> {
-  let checks: [T.Restriction] = []
-  let options: [T] = []
+  var checks: [T.Restriction] = []
+  var options: [T] = []
 
   init(checks: [T.Restriction]) {
     self.checks = checks
