@@ -34,7 +34,7 @@ extension Restrictionable {
   func check(_ value: ValueToCheck) throws {}
 }
 
-protocol Validatorable: Equatable, Restrictionable {
+protocol Validatorable: Equatable, Restrictionable where Restrictionable.ValueToCheck == Self {
   associatedtype Restriction: Restrictionable where Restriction.ValueToCheck == Self
   static func parse(_ value: String) -> Self?
 }
