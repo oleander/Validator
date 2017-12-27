@@ -13,10 +13,13 @@ protocol Validatorable {
 extension Int: Validatorable {
   enum Restriction: Restrictionable {
     case max(Int)
+    case min(Int)
 
     func check(_ value: Int) throws {
       switch self {
-      case let .max(other) where value < other:
+      case let .max(other) where value <= other:
+        return
+      case let .min(other) where value >= other:
         return
       default:
         throw "not valid"
@@ -47,11 +50,11 @@ struct Parameter<T: Validatorable> {
 
 let check = Parameter<Int>(
   // flag: "max-age",
-  checks: [.max(90)]
+  checks: [.min(10), .max(90)]
 )
 
 do {
-  print(try check.parse("10"))
+  print(try check.parse("11"))
   print(try check.parse("100"))
 } catch {
   print("ERROR: \(error)")
