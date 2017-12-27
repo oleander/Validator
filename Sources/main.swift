@@ -81,7 +81,7 @@ extension String: Validatorable {
   }
 }
 
-struct MultiParam<T: Validatorable> {
+struct MultiParameter<T: Validatorable> {
   func read(_ value: String?) throws -> [T] {
     guard let value = value else {
       // if let fallback = fallback {
@@ -211,7 +211,7 @@ let opt3 = Parameter<Car>(
   fallback: .volvo
 )
 
-let multiOpt = MultiParam<Car>(
+let multiOpt = MultiParameter<Car>(
   // options: [., .maybe]
 )
 
