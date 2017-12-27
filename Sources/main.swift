@@ -63,7 +63,7 @@ let check = Parameter<Int>(
 )
 
 enum Car: Validatorable, Restrictionable {
-  typealias Restriction = Self
+  typealias Restriction = Car
   case volvo, saab
 
   func check(_ value: Car) throws {}
