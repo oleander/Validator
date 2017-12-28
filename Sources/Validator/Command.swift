@@ -76,14 +76,14 @@ open class Cmd {
     }
   }
 
-  // private var params: [Setter] {
-  //   let current = Mirror(reflecting: self)
-  //   if let master = current.superclassMirror {
-  //     return from(mirror: master) + from(mirror: current)
-  //   } else {
-  //     return from(mirror: current)
-  //   }
-  // }
+  private var params: [Cmd] {
+    let current = Mirror(reflecting: self)
+    if let master = current.superclassMirror {
+      return from(mirror: master) + from(mirror: current)
+    } else {
+      return from(mirror: current)
+    }
+  }
 
   private func from(mirror: Mirror) -> [Cmd] {
     return mirror.children.reduce([Cmd]()) { acc, child in
