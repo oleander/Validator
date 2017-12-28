@@ -6,6 +6,19 @@ struct Horse: Group {}
 
 struct Thing<T: Group> {}
 
-let person = Thing<Person>()
-let monkey = Thing<Monkey>()
-let horse = Thing<Horse>()
+class Command {
+  let person = Thing<Person>()
+  let monkey = Thing<Monkey>()
+  let horse = Thing<Horse>()
+
+  let value = "hello"
+}
+
+let command = Command()
+let children = Mirror(reflecting: command).children
+
+for child in children {
+  if child is Thing<Group> {
+    print("Found an instance varible of type Thing<Group>!")
+  }
+}

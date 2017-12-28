@@ -26,6 +26,7 @@ class ValidatorTests: XCTestCase {
     assert(Cmd(["hello"]).arguments == [.value("hello")])
     assert(Cmd(["hello", "nej"]).arguments == [.value("hello"), .value("nej")])
     assert(Cmd(["--hello", "--nej"]).arguments == [.flag("hello"), .flag("nej")])
+    assert(Cmd(["--hello", "value", "value"]).arguments == [.param("hello", "value"), .value("value")])
   }
 
     func testExample() {
