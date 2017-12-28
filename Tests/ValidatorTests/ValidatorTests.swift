@@ -20,6 +20,10 @@ enum Car: Validatorable {
 }
 
 class ValidatorTests: XCTestCase {
+  func testEx2() {
+    assert(Cmd(["--hello", "apa"]).arguments == [.param("hello", "apa")])
+  }
+
     func testExample() {
       let check = Parameter<Int>(
         // flag: "max-age"  jjjj
