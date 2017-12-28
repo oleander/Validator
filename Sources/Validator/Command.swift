@@ -32,8 +32,6 @@ open class Cmd {
     // let params = self.params
     let arguments = self.arguments
 
-    // print(arguments)
-
     // for argument in arguments {
     //   for param in params {
     //     switch (param, argument) {
