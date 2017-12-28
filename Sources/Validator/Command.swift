@@ -26,24 +26,28 @@ open class Cmd {
 
   private let args: [String]
 
-  public init(_ args: [String] = CommandLine.arguments) {
+  public init<T: Validatorable>(_ args: [String] = CommandLine.arguments, _ x: T? = nil) {
     self.args = args
 
     // let params = self.params
-    let arguments = self.arguments
+    // let arguments = self.arguments
 
-    // for argument in arguments {
-    //   for param in params {
-    //     switch (param, argument) {
-    //     case let (is Flag, .flag(flag)) where param.flag == flag:
-    //       (param as! Flag).on()
-    //     case let (is Value, .value(flag)):
-    //       log.bug("Not yet implemented")
-    //     case let (is Paramable, .param(flag, value)) where param.flag == flag:
-    //       (param as! Paramable).set(value)
-    //     }
-    //   }
-    // }
+    for argument in arguments {
+      for param in attr() {
+        switch argument {
+        // case let (is Flag, .flag(flag)) where param.flag == flag:
+        //   (param as! Flag).on()
+        // case let (is Value, .value(flag)):
+        //   log.bug("Not yet implemented")
+        case let .param(flag, value) where param.flag == flag:
+          // (param as! Parameter).set(value)
+          print(flag)
+          print(value)
+        default:
+            continue
+          }
+      }
+    }
   }
 
   internal var arguments: [ArgEndState] {
@@ -76,7 +80,19 @@ open class Cmd {
     }
   }
 
-  private var params: [Cmd] {
+  private func attr<T: Validatorable>() -> [Parameter<T>] {
+    return commands.reduce([]) { acc, cmd in
+      return acc + Mirror(reflecting: cmd).children.reduce([Parameter<T>]()) { acc, child in
+        guard let value = child.value as? Parameter<T> else {
+          return acc
+        }
+
+        return acc + [value]
+      }
+    }
+  }
+
+  private var commands: [Cmd] {
     let current = Mirror(reflecting: self)
     if let master = current.superclassMirror {
       return from(mirror: master) + from(mirror: current)

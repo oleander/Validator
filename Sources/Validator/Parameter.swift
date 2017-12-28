@@ -1,4 +1,5 @@
-struct Parameter<T: Validatorable> {
+public struct Parameter<T: Validatorable> {
+  let flag: String = "hello"
   var checks: [KeyThing: T.Restriction] = [:]
   var options: [T]?
   var fallback: T?

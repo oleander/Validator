@@ -1,9 +1,9 @@
 extension Int: Validatorable {
-  enum Restriction: Restrictionable {
+  public enum Restriction: Restrictionable {
     case max(Int)
     case min(Int)
 
-    func check(_ value: Int) throws {
+    public func check(_ value: Int) throws {
       switch self {
       case let .max(other) where value <= other:
         return
@@ -15,7 +15,7 @@ extension Int: Validatorable {
     }
   }
 
-  static func parse(_ value: String) -> Int? {
+  public static func parse(_ value: String) -> Int? {
     return Int(value)
   }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-struct MultiParameter<T: Validatorable> {
+public struct MultiParameter<T: Validatorable> {
   var checks: [KeyThing: T.Restriction] = [:]
   var options: [T]?
   var fallback: [T]?

@@ -1,10 +1,10 @@
 extension String: Validatorable {
-  enum Restriction: Restrictionable {
-    typealias ValueToCheck = String
+  public enum Restriction: Restrictionable {
+    public typealias ValueToCheck = String
     case max(Int)
     case min(Int)
 
-    func check(_ value: String) throws {
+    public func check(_ value: String) throws {
       switch self {
       case let .max(other) where value.count <= other:
         return
@@ -16,7 +16,7 @@ extension String: Validatorable {
     }
   }
 
-  static func parse(_ value: String) -> String? {
+  public static func parse(_ value: String) -> String? {
     return value
   }
 }
