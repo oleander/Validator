@@ -21,7 +21,11 @@ enum Car: Validatorable {
 
 class ValidatorTests: XCTestCase {
   func testEx2() {
-    assert(Cmd(["--hello", "apa"]).arguments == [.param("hjj", "apa")])
+    assert(Cmd(["--hello", "apa"]).arguments == [.param("hello", "apa")])
+    assert(Cmd(["--hello"]).arguments == [.flag("hello")])
+    assert(Cmd(["hello"]).arguments == [.value("hello")])
+    assert(Cmd(["hello", "nej"]).arguments == [.value("hello"), .value("nej")])
+    assert(Cmd(["--hello", "--nej"]).arguments == [.flag("hello"), .flag("nej")])
   }
 
     func testExample() {
