@@ -85,13 +85,13 @@ open class Cmd {
   //   }
   // }
 
-  // private func from(mirror: Mirror) -> [Setter] {
-  //   return mirror.children.reduce([Setter]()) { acc, child in
-  //     if let res = child.value as? Setter {
-  //       return acc + [res]
-  //     }
-  //
-  //     return acc
-  //   }
-  // }
+  private func from(mirror: Mirror) -> [Cmd] {
+    return mirror.children.reduce([Cmd]()) { acc, child in
+      if let res = child.value as? Cmd {
+        return acc + [res]
+      }
+
+      return acc
+    }
+  }
 }
